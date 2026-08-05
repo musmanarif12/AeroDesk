@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/AeroDesk/">
+    <Project Path="AeroDesk/AeroDesk.API/AeroDesk.API.csproj" />
+    <Project Path="AeroDesk/AeroDesk.Application/AeroDesk.Application.csproj" />
+    <Project Path="AeroDesk/AeroDesk.Domain/AeroDesk.Domain.csproj" />
+    <Project Path="AeroDesk/AeroDesk.Infrastructure/AeroDesk.Infrastructure.csproj" />
+  </Folder>
+</Solution>
