@@ -10,10 +10,9 @@ namespace AeroDesk.Domain.Entities
         public string IATACode { get; set; } = string.Empty;
         public string ICAOCode { get; set; } = string.Empty;
 
-        //Navigation Properties
+        // Navigation Properties
         public ICollection<Gate> Gates { get; set; } = new List<Gate>();
-        public ICollection<Flight> Flights { get; set; } = new List<Flight>();
+        public ICollection<Flight> DepartureFlights { get; set; } = new List<Flight>();
+        public ICollection<Flight> ArrivalFlights { get; set; } = new List<Flight>();
     }
 }
-
-

@@ -14,7 +14,7 @@ namespace AeroDesk.Domain.Entities
         public int AirlineId { get; set; }
         public int AircraftId { get; set; }
 
-        //Navigation Properties
+        // Navigation Properties
         public Airport DepartureAirport { get; set; } = null!;
         public Airport ArrivalAirport { get; set; } = null!;
         public Gate Gate { get; set; } = null!;
@@ -22,7 +22,5 @@ namespace AeroDesk.Domain.Entities
         public Aircraft Aircraft { get; set; } = null!;
         public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
         public ICollection<CheckIn> CheckIns { get; set; } = new List<CheckIn>();
-        public ICollection<BoardingPass> BoardingPasses { get; set; } = new List<BoardingPass>();
-
     }
 }
