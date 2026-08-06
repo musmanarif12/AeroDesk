@@ -12,5 +12,6 @@ namespace AeroDesk.Domain.Entities
 
         //Navigation Property
         public ICollection<Aircraft> Aircrafts { get; set; } = new List<Aircraft>();
+        public ICollection<Flight> Flights { get; set; } = new List<Flight>();
     }
 }
