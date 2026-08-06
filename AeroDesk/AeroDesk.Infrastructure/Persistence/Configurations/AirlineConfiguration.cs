@@ -11,7 +11,7 @@ namespace AeroDesk.Infrastructure.Persistence.Configurations
             builder.ToTable("Airlines");
             builder.HasKey(a => a.Id);
             builder.Property(a => a.Name).IsRequired().HasMaxLength(100);
-            builder.Property(a => a.Code).IsRequired().HasMaxLength(3);
+            builder.Property(a => a.Code).IsRequired().HasMaxLength(10);
             builder.Property(a => a.Country).IsRequired().HasMaxLength(100);
             builder.Property(a => a.ContactNumber).IsRequired().HasMaxLength(20);
             builder.Property(a => a.Email).IsRequired().HasMaxLength(100);

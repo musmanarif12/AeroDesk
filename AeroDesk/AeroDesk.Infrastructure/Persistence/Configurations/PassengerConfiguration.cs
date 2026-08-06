@@ -45,7 +45,7 @@ namespace AeroDesk.Infrastructure.Persistence.Configurations
             builder.HasIndex(p => p.Email)
                 .IsUnique();
 
-            builder.HasOne<User>()
+            builder.HasOne(p => p.User)
                 .WithOne(u => u.Passenger)
                 .HasForeignKey<User>(u => u.PassengerId)
                 .OnDelete(DeleteBehavior.Cascade);

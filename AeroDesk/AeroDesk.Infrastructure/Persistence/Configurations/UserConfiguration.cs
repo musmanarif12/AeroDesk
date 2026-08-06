@@ -12,6 +12,12 @@ namespace AeroDesk.Infrastructure.Persistence.Configurations
 
             builder.HasKey(u => u.Id);
 
+            builder.Property(u => u.RoleId)
+                .IsRequired();
+            builder.HasOne(u => u.Role)
+                .WithMany(r => r.Users)
+                .HasForeignKey(u => u.RoleId)
+                .OnDelete(DeleteBehavior.Restrict);
             builder.Property(u => u.Name)
                 .IsRequired()
                 .HasMaxLength(100);
@@ -24,8 +30,10 @@ namespace AeroDesk.Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .HasMaxLength(255);
 
-            builder.Property(u => u.Role)
-                .IsRequired();
+            builder.HasOne(u => u.Role)
+                .WithMany(r => r.Users)
+                .HasForeignKey(u => u.RoleId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasIndex(u => u.Email)
                 .IsUnique();

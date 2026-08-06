@@ -1,5 +1,6 @@
 ﻿using AeroDesk.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 namespace AeroDesk.Application.Common.Interfaces
 {
     public interface IApplicationDbContext
@@ -15,6 +16,7 @@ namespace AeroDesk.Application.Common.Interfaces
         DbSet<Gate> Gates { get; }
         DbSet<Passenger> Passengers { get; }
         DbSet<User> Users { get; }
+        DbSet<Role> Roles { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 
     }

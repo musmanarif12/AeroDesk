@@ -13,8 +13,10 @@ namespace AeroDesk.Domain.Entities
         public string Email { get; set; } = string.Empty;
 
         //Navigation Properties
+        public User? User { get; set; }
         public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
         public ICollection<Baggage> Baggages { get; set; } = new List<Baggage>();
         public ICollection<CheckIn> CheckIns { get; set; } = new List<CheckIn>();
+
     }
 }

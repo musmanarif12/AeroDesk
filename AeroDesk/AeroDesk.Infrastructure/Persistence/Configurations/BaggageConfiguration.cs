@@ -14,7 +14,7 @@ namespace AeroDesk.Infrastructure.Persistence.Configurations
 
             builder.Property(b => b.Weight)
                 .IsRequired()
-                .HasPrecision(5, 2);
+                .HasPrecision(6, 2);
 
             builder.Property(b => b.TagNumber)
                 .IsRequired()

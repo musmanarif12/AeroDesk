@@ -44,10 +44,7 @@ namespace AeroDesk.Infrastructure.Persistence.Configurations
                 .HasForeignKey(b => b.FlightId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasMany(b => b.CheckIns)
-                .WithOne(c => c.Booking)
-                .HasForeignKey(c => c.BookingId)
-                .OnDelete(DeleteBehavior.Cascade);
+          
         }
     }
 }
