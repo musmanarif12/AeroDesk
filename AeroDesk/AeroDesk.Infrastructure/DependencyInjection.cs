@@ -3,7 +3,7 @@ using AeroDesk.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
+using AeroDesk.Infrastructure.Services;
 namespace AeroDesk.Infrastructure
 {
     public static class DependencyInjection
@@ -19,6 +19,8 @@ namespace AeroDesk.Infrastructure
             services.AddScoped<IApplicationDbContext>(provider =>
                 provider.GetRequiredService<ApplicationDbContext>());
 
+            services.AddScoped<IPasswordHasher, PasswordHasher>();
+            services.AddScoped<IJwtService, JwtService>();
             return services;
         }
     }
