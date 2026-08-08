@@ -17,6 +17,7 @@ namespace AeroDesk.Application.Common.Interfaces
         DbSet<Passenger> Passengers { get; }
         DbSet<User> Users { get; }
         DbSet<Role> Roles { get; }
+        DbSet<Document> Documents { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 
     }

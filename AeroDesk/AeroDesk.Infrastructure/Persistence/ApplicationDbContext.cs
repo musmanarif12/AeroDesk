@@ -22,6 +22,7 @@ namespace AeroDesk.Infrastructure.Persistence
         public DbSet<Passenger> Passengers { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<Document> Documents { get; set; }
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             return await base.SaveChangesAsync(cancellationToken);

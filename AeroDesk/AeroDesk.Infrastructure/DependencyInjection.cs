@@ -1,9 +1,10 @@
 ﻿using AeroDesk.Application.Common.Interfaces;
+using AeroDesk.Infrastructure.FileStorage;
 using AeroDesk.Infrastructure.Persistence;
+using AeroDesk.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using AeroDesk.Infrastructure.Services;
 namespace AeroDesk.Infrastructure
 {
     public static class DependencyInjection
@@ -21,6 +22,7 @@ namespace AeroDesk.Infrastructure
 
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IJwtService, JwtService>();
+            services.AddScoped<IFileStorageService, LocalFileStorageService>();
             return services;
         }
     }
