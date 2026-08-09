@@ -5,12 +5,14 @@ using AeroDesk.Application.Features.Gates.DTOs;
 using AeroDesk.Application.Features.Gates.Queries.GetGateById;
 using AeroDesk.Application.Features.Gates.Queries.GetGates;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AeroDesk.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "Administrator,Airline Manager")]
     public class GatesController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -63,6 +65,7 @@ namespace AeroDesk.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(int id)
         {
             var deleted = await _mediator.Send(new DeleteGateCommand(id));

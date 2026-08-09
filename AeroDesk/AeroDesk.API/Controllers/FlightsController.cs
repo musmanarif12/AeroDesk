@@ -5,12 +5,14 @@ using AeroDesk.Application.Features.Flights.DTOs;
 using AeroDesk.Application.Features.Flights.Queries.GetFlightById;
 using AeroDesk.Application.Features.Flights.Queries.GetFlights;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AeroDesk.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize] // Any authenticated role can view flights (SRS: Passenger views flight status too)
     public class FlightsController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -20,6 +22,7 @@ namespace AeroDesk.API.Controllers
             _mediator = mediator;
         }
 
+        // Any logged-in role (including Passenger) can view flights
         [HttpGet]
         public async Task<ActionResult<List<FlightDto>>> GetAll()
         {
@@ -42,6 +45,7 @@ namespace AeroDesk.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator,Airline Manager")]
         public async Task<ActionResult<FlightDto>> Create(CreateFlightCommand command)
         {
             var result = await _mediator.Send(command);
@@ -53,6 +57,7 @@ namespace AeroDesk.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Administrator,Airline Manager")]
         public async Task<ActionResult<FlightDto>> Update(
             int id,
             UpdateFlightCommand command)
@@ -73,6 +78,7 @@ namespace AeroDesk.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(int id)
         {
             var deleted = await _mediator.Send(

@@ -5,12 +5,14 @@ using AeroDesk.Application.Features.CheckIns.DTOs;
 using AeroDesk.Application.Features.CheckIns.Queries.GetCheckInById;
 using AeroDesk.Application.Features.CheckIns.Queries.GetCheckIns;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AeroDesk.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "Administrator,Check-In Officer,Boarding Officer")]
     public class CheckInsController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -42,6 +44,7 @@ namespace AeroDesk.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator,Check-In Officer")]
         public async Task<ActionResult<CheckInDto>> Create(CreateCheckInCommand command)
         {
             var result = await _mediator.Send(command);
@@ -53,6 +56,7 @@ namespace AeroDesk.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Administrator,Check-In Officer")]
         public async Task<ActionResult<CheckInDto>> Update(
             int id,
             UpdateCheckInCommand command)
@@ -73,6 +77,7 @@ namespace AeroDesk.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(int id)
         {
             var deleted = await _mediator.Send(new DeleteCheckInCommand(id));

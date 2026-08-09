@@ -10,12 +10,14 @@ using AeroDesk.Application.Features.Reports.Queries.SearchPassenger;
 using AeroDesk.Application.Features.Reports.Queries.GetDashboardSummary;
 
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AeroDesk.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "Administrator")]
     public class ReportsController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -25,7 +27,6 @@ namespace AeroDesk.API.Controllers
             _mediator = mediator;
         }
 
-        
         [HttpGet("flights-by-date")]
         public async Task<IActionResult> GetFlightsByDate([FromQuery] DateTime date)
         {
@@ -33,7 +34,7 @@ namespace AeroDesk.API.Controllers
             var result = await _mediator.Send(query);
             return Ok(result);
         }
-      
+
         [HttpGet("flights-by-airline/{airlineId}")]
         public async Task<IActionResult> GetFlightsByAirline(int airlineId)
         {
@@ -41,7 +42,7 @@ namespace AeroDesk.API.Controllers
             var result = await _mediator.Send(query);
             return Ok(result);
         }
-        
+
         [HttpGet("delayed-flights")]
         public async Task<IActionResult> GetDelayedFlights()
         {
@@ -49,7 +50,7 @@ namespace AeroDesk.API.Controllers
             var result = await _mediator.Send(query);
             return Ok(result);
         }
-      
+
         [HttpGet("active-flights")]
         public async Task<IActionResult> GetActiveFlights()
         {
@@ -57,7 +58,7 @@ namespace AeroDesk.API.Controllers
             var result = await _mediator.Send(query);
             return Ok(result);
         }
-        
+
         [HttpGet("flights-by-airport/{airportId}")]
         public async Task<IActionResult> GetFlightsByAirport(int airportId)
         {
@@ -65,7 +66,7 @@ namespace AeroDesk.API.Controllers
             var result = await _mediator.Send(query);
             return Ok(result);
         }
-        
+
         [HttpGet("passenger-count-per-flight")]
         public async Task<IActionResult> GetPassengerCountPerFlight()
         {
@@ -73,7 +74,7 @@ namespace AeroDesk.API.Controllers
             var result = await _mediator.Send(query);
             return Ok(result);
         }
-        
+
         [HttpGet("available-seats")]
         public async Task<IActionResult> GetAvailableSeats()
         {
@@ -81,7 +82,7 @@ namespace AeroDesk.API.Controllers
             var result = await _mediator.Send(query);
             return Ok(result);
         }
-        
+
         [HttpGet("daily-bookings")]
         public async Task<IActionResult> GetDailyBookings()
         {
@@ -89,7 +90,7 @@ namespace AeroDesk.API.Controllers
             var result = await _mediator.Send(query);
             return Ok(result);
         }
-        
+
         [HttpGet("search-passenger")]
         public async Task<IActionResult> SearchPassenger([FromQuery] string term)
         {
@@ -98,7 +99,6 @@ namespace AeroDesk.API.Controllers
             return Ok(result);
         }
 
-        
         [HttpGet("dashboard-summary")]
         public async Task<IActionResult> GetDashboardSummary()
         {

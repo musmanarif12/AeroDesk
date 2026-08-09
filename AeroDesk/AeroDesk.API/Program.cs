@@ -1,9 +1,11 @@
+using AeroDesk.API.Middleware;
 using AeroDesk.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AeroDesk.Application;
 using Scalar.AspNetCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -49,6 +51,9 @@ if (app.Environment.IsDevelopment())
         options.Theme = ScalarTheme.BluePlanet;
     });
 }
+
+// NEW: Global Exception Middleware — must be FIRST in the pipeline
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 

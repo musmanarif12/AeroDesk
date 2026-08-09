@@ -5,6 +5,7 @@ using AeroDesk.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+
 namespace AeroDesk.Infrastructure
 {
     public static class DependencyInjection
@@ -23,6 +24,11 @@ namespace AeroDesk.Infrastructure
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<IFileStorageService, LocalFileStorageService>();
+
+            // NEW: Current User Service for Authorization
+            services.AddHttpContextAccessor();
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
+
             return services;
         }
     }

@@ -46,17 +46,32 @@ namespace AeroDesk.Application.Features.Auth.Commands.Register
                 };
             }
 
-            // Create User
+            // 1. Create Passenger record first
+            var passenger = new Passenger
+            {
+                Name = request.Name,
+                Email = request.Email,
+                PassportNumber = "PENDING",
+                Nationality = "N/A",
+                Gender = "N/A",
+                PhoneNumber = "N/A",
+                DateOfBirth = DateOnly.FromDateTime(DateTime.UtcNow)
+            };
+
+            _context.Passengers.Add(passenger);
+            await _context.SaveChangesAsync(cancellationToken);
+
+            // 2. Create User and link created PassengerId
             var user = new User
             {
                 Name = request.Name,
                 Email = request.Email,
                 PasswordHash = _passwordHasher.HashPassword(request.Password),
-                RoleId = passengerRole.Id
+                RoleId = passengerRole.Id,
+                PassengerId = passenger.Id
             };
 
             _context.Users.Add(user);
-
             await _context.SaveChangesAsync(cancellationToken);
 
             return new RegisterResponseDto

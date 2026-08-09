@@ -5,12 +5,14 @@ using AeroDesk.Application.Features.Bookings.DTOs;
 using AeroDesk.Application.Features.Bookings.Queries.GetBookingById;
 using AeroDesk.Application.Features.Bookings.Queries.GetBookings;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AeroDesk.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "Administrator,Check-In Officer")]
     public class BookingsController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -28,7 +30,10 @@ namespace AeroDesk.API.Controllers
             return Ok(result);
         }
 
+        // Passenger allowed here; ownership check (own booking only) happens
+        // inside GetBookingByIdQueryHandler using ICurrentUserService
         [HttpGet("{id}")]
+        [Authorize(Roles = "Administrator,Check-In Officer,Passenger")]
         public async Task<ActionResult<BookingDto>> GetById(int id)
         {
             var result = await _mediator.Send(new GetBookingByIdQuery(id));
