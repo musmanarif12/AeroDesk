@@ -4,7 +4,7 @@ using MediatR;
 
 namespace AeroDesk.Application.Features.Bookings.Commands.CreateBooking
 {
-    [Authorize(Roles = "Administrator,Check-In Officer")]
+    [Authorize(Roles = "Administrator,Check-In Officer,Passenger")]
     public class CreateBookingCommand : IRequest<BookingDto>
     {
         public string BookingReference { get; set; } = string.Empty;

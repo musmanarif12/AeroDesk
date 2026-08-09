@@ -23,7 +23,7 @@ namespace AeroDesk.Application.Features.Auth.Commands.Register
             RegisterCommand request,
             CancellationToken cancellationToken)
         {
-            // Check email
+            // 1. Check if Email already exists
             if (await _context.Users.AnyAsync(u => u.Email == request.Email, cancellationToken))
             {
                 return new RegisterResponseDto
@@ -33,42 +33,50 @@ namespace AeroDesk.Application.Features.Auth.Commands.Register
                 };
             }
 
-            // Get Passenger Role
-            var passengerRole = await _context.Roles
-                .FirstOrDefaultAsync(r => r.Name == "Passenger", cancellationToken);
+            // 2. Fetch target Role from Database dynamically
+            var targetRoleName = string.IsNullOrWhiteSpace(request.Role) ? "Passenger" : request.Role;
 
-            if (passengerRole == null)
+            var selectedRole = await _context.Roles
+                .FirstOrDefaultAsync(r => r.Name == targetRoleName, cancellationToken);
+
+            if (selectedRole == null)
             {
                 return new RegisterResponseDto
                 {
                     Success = false,
-                    Message = "Passenger role not found."
+                    Message = $"Role '{targetRoleName}' not found in system."
                 };
             }
 
-            // 1. Create Passenger record first
-            var passenger = new Passenger
+            int? createdPassengerId = null;
+
+            // 3. Create Passenger record ONLY if registering a Passenger
+            if (string.Equals(selectedRole.Name, "Passenger", StringComparison.OrdinalIgnoreCase))
             {
-                Name = request.Name,
-                Email = request.Email,
-                PassportNumber = "PENDING",
-                Nationality = "N/A",
-                Gender = "N/A",
-                PhoneNumber = "N/A",
-                DateOfBirth = DateOnly.FromDateTime(DateTime.UtcNow)
-            };
+                var passenger = new Passenger
+                {
+                    Name = request.Name,
+                    Email = request.Email,
+                    PassportNumber = "PENDING",
+                    Nationality = "N/A",
+                    Gender = "N/A",
+                    PhoneNumber = "N/A",
+                    DateOfBirth = DateOnly.FromDateTime(DateTime.UtcNow)
+                };
 
-            _context.Passengers.Add(passenger);
-            await _context.SaveChangesAsync(cancellationToken);
+                _context.Passengers.Add(passenger);
+                await _context.SaveChangesAsync(cancellationToken);
+                createdPassengerId = passenger.Id;
+            }
 
-            // 2. Create User and link created PassengerId
+            // 4. Create User entity and link RoleId & PassengerId
             var user = new User
             {
                 Name = request.Name,
                 Email = request.Email,
                 PasswordHash = _passwordHasher.HashPassword(request.Password),
-                RoleId = passengerRole.Id,
-                PassengerId = passenger.Id
+                RoleId = selectedRole.Id,
+                PassengerId = createdPassengerId
             };
 
             _context.Users.Add(user);
@@ -77,7 +85,7 @@ namespace AeroDesk.Application.Features.Auth.Commands.Register
             return new RegisterResponseDto
             {
                 Success = true,
-                Message = "Passenger registered successfully."
+                Message = $"{selectedRole.Name} registered successfully."
             };
         }
     }

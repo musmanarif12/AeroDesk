@@ -2,7 +2,9 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using AutoMapper; // Standard AutoMapper namespace
 using System.Reflection;
+
 
 namespace AeroDesk.Application
 {

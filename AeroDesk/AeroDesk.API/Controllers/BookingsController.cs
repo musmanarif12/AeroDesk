@@ -12,7 +12,7 @@ namespace AeroDesk.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Administrator,Check-In Officer")]
+    [Authorize]
     public class BookingsController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -23,17 +23,15 @@ namespace AeroDesk.API.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Administrator,Check-In Officer,CheckInOfficer,Check-in Officer")]
         public async Task<ActionResult<List<BookingDto>>> GetAll()
         {
             var result = await _mediator.Send(new GetBookingsQuery());
-
             return Ok(result);
         }
 
-        // Passenger allowed here; ownership check (own booking only) happens
-        // inside GetBookingByIdQueryHandler using ICurrentUserService
         [HttpGet("{id}")]
-        [Authorize(Roles = "Administrator,Check-In Officer,Passenger")]
+        [Authorize(Roles = "Administrator,Check-In Officer,CheckInOfficer,Check-in Officer,Passenger")]
         public async Task<ActionResult<BookingDto>> GetById(int id)
         {
             var result = await _mediator.Send(new GetBookingByIdQuery(id));
@@ -47,6 +45,7 @@ namespace AeroDesk.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator,Check-In Officer,CheckInOfficer,Check-in Officer,Passenger")]
         public async Task<ActionResult<BookingDto>> Create(CreateBookingCommand command)
         {
             var result = await _mediator.Send(command);
@@ -58,6 +57,7 @@ namespace AeroDesk.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Administrator,Check-In Officer,CheckInOfficer,Check-in Officer")]
         public async Task<ActionResult<BookingDto>> Update(
             int id,
             UpdateBookingCommand command)
@@ -78,10 +78,10 @@ namespace AeroDesk.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Administrator,Check-In Officer,CheckInOfficer,Check-in Officer")]
         public async Task<IActionResult> Delete(int id)
         {
-            var deleted = await _mediator.Send(
-                new DeleteBookingCommand(id));
+            var deleted = await _mediator.Send(new DeleteBookingCommand(id));
 
             if (!deleted)
             {

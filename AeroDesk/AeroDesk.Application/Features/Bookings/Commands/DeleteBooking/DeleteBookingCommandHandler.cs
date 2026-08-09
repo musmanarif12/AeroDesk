@@ -9,8 +9,7 @@ namespace AeroDesk.Application.Features.Bookings.Commands.DeleteBooking
     {
         private readonly IApplicationDbContext _context;
 
-        public DeleteBookingCommandHandler(
-            IApplicationDbContext context)
+        public DeleteBookingCommandHandler(IApplicationDbContext context)
         {
             _context = context;
         }

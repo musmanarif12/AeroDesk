@@ -3,7 +3,7 @@ using MediatR;
 
 namespace AeroDesk.Application.Features.Bookings.Commands.DeleteBooking
 {
-    [Authorize(Roles = "Administrator,Check-In Officer")]
+    [Authorize(Roles = "Administrator,Check-In Officer,CheckInOfficer,Check-in Officer")]
     public class DeleteBookingCommand : IRequest<bool>
     {
         public int Id { get; set; }
