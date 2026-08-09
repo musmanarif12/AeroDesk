@@ -12,7 +12,7 @@ namespace AeroDesk.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize] // Any authenticated role can view flights (SRS: Passenger views flight status too)
+    [Authorize]
     public class FlightsController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -22,12 +22,10 @@ namespace AeroDesk.API.Controllers
             _mediator = mediator;
         }
 
-        // Any logged-in role (including Passenger) can view flights
         [HttpGet]
         public async Task<ActionResult<List<FlightDto>>> GetAll()
         {
             var result = await _mediator.Send(new GetFlightsQuery());
-
             return Ok(result);
         }
 
@@ -45,7 +43,7 @@ namespace AeroDesk.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Administrator,Airline Manager")]
+        [Authorize(Roles = "Administrator,Airline Manager,AirlineManager")]
         public async Task<ActionResult<FlightDto>> Create(CreateFlightCommand command)
         {
             var result = await _mediator.Send(command);
@@ -57,7 +55,7 @@ namespace AeroDesk.API.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Administrator,Airline Manager")]
+        [Authorize(Roles = "Administrator,Airline Manager,AirlineManager")]
         public async Task<ActionResult<FlightDto>> Update(
             int id,
             UpdateFlightCommand command)
@@ -81,8 +79,7 @@ namespace AeroDesk.API.Controllers
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(int id)
         {
-            var deleted = await _mediator.Send(
-                new DeleteFlightCommand(id));
+            var deleted = await _mediator.Send(new DeleteFlightCommand(id));
 
             if (!deleted)
             {

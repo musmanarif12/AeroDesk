@@ -24,7 +24,7 @@ namespace AeroDesk.API.Controllers
 
         // GET: api/airlines
         [HttpGet]
-        [Authorize(Roles = "Administrator,Airline Manager")]
+        [Authorize(Roles = "Administrator,Airline Manager,AirlineManager")]
         public async Task<ActionResult<List<AirlineDto>>> GetAll()
         {
             var airlines = await _mediator.Send(new GetAirlinesQuery());
@@ -34,7 +34,7 @@ namespace AeroDesk.API.Controllers
 
         // GET: api/airlines/1
         [HttpGet("{id}")]
-        [Authorize(Roles = "Administrator,Airline Manager")]
+        [Authorize(Roles = "Administrator,Airline Manager,AirlineManager")]
         public async Task<ActionResult<AirlineDto>> GetById(int id)
         {
             var airline = await _mediator.Send(new GetAirlineByIdQuery(id));
