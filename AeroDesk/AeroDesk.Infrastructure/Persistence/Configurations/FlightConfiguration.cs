@@ -26,6 +26,10 @@ namespace AeroDesk.Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .HasMaxLength(50);
 
+            builder.Property(f => f.NotificationSent)
+                .IsRequired()
+                .HasDefaultValue(false);
+
             builder.HasIndex(f => f.FlightNumber)
                 .IsUnique();
 
@@ -65,7 +69,6 @@ namespace AeroDesk.Infrastructure.Persistence.Configurations
                 .HasForeignKey(b => b.FlightId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-          
         }
     }
 }

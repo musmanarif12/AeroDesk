@@ -1,4 +1,6 @@
 ﻿using AeroDesk.Application.Common.Interfaces;
+using AeroDesk.Infrastructure.BackgroundServices;
+using AeroDesk.Infrastructure.Email;
 using AeroDesk.Infrastructure.FileStorage;
 using AeroDesk.Infrastructure.Persistence;
 using AeroDesk.Infrastructure.Services;
@@ -24,6 +26,8 @@ namespace AeroDesk.Infrastructure
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<IFileStorageService, LocalFileStorageService>();
+            services.AddScoped<IEmailService, SmtpEmailService>();
+            services.AddHostedService<FlightNotificationBackgroundService>();
 
             // NEW: Current User Service for Authorization
             services.AddHttpContextAccessor();

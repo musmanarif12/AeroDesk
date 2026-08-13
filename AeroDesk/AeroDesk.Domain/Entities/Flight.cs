@@ -8,6 +8,7 @@ namespace AeroDesk.Domain.Entities
         public DateTime DepartureTime { get; set; }
         public DateTime ArrivalTime { get; set; }
         public string Status { get; set; } = string.Empty;
+        public bool NotificationSent { get; set; } = false;
         public int DepartureAirportId { get; set; }
         public int ArrivalAirportId { get; set; }
         public int GateId { get; set; }
