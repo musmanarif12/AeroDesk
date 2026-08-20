@@ -10,9 +10,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
-
 builder.Services.AddOpenApi();
+
+// --- HTTP CLIENT REGISTRATION FOR ANALYTICS INGESTION ---
+builder.Services.AddHttpClient();
+
 builder.Services.AddApplication();
+
 // Dependency Injection
 builder.Services.AddInfrastructure(builder.Configuration);
 
