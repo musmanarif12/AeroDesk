@@ -42,6 +42,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 // Authorization
 builder.Services.AddAuthorization();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+        .AllowAnyMethod()
+        .AllowAnyHeader();  
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -63,6 +73,8 @@ app.UseHttpsRedirection();
 
 // Authentication MUST come before Authorization
 app.UseAuthentication();
+
+app.UseCors("AllowReactApp");
 
 app.UseAuthorization();
 

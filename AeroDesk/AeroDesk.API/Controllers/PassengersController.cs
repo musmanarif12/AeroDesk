@@ -12,7 +12,8 @@ namespace AeroDesk.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    [AllowAnonymous]
+    // [Authorize]
     public class PassengersController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -24,7 +25,7 @@ namespace AeroDesk.API.Controllers
 
         // GET: api/passengers
         [HttpGet]
-        [Authorize(Roles = "Administrator,Check-In Officer,CheckInOfficer,Boarding Officer,BoardingOfficer")]
+        // [Authorize(Roles = "Administrator,Check-In Officer,CheckInOfficer,Boarding Officer,BoardingOfficer")]
         public async Task<ActionResult<List<PassengerDto>>> GetAll()
         {
             var result = await _mediator.Send(new GetPassengersQuery());
@@ -33,7 +34,7 @@ namespace AeroDesk.API.Controllers
 
         // GET: api/passengers/1
         [HttpGet("{id}")]
-        [Authorize(Roles = "Administrator,Check-In Officer,CheckInOfficer,Boarding Officer,BoardingOfficer,Passenger")]
+        // [Authorize(Roles = "Administrator,Check-In Officer,CheckInOfficer,Boarding Officer,BoardingOfficer,Passenger")]
         public async Task<ActionResult<PassengerDto>> GetById(int id)
         {
             var result = await _mediator.Send(new GetPassengerByIdQuery(id));
@@ -48,7 +49,7 @@ namespace AeroDesk.API.Controllers
 
         // POST: api/passengers
         [HttpPost]
-        [Authorize(Roles = "Administrator,Check-In Officer,CheckInOfficer")]
+        // [Authorize(Roles = "Administrator,Check-In Officer,CheckInOfficer")]
         public async Task<ActionResult<PassengerDto>> Create(CreatePassengerCommand command)
         {
             var result = await _mediator.Send(command);
@@ -61,7 +62,7 @@ namespace AeroDesk.API.Controllers
 
         // PUT: api/passengers/1
         [HttpPut("{id}")]
-        [Authorize(Roles = "Administrator,Check-In Officer,CheckInOfficer")]
+        // [Authorize(Roles = "Administrator,Check-In Officer,CheckInOfficer")]
         public async Task<ActionResult<PassengerDto>> Update(int id, UpdatePassengerCommand command)
         {
             if (id != command.Id)
@@ -81,7 +82,7 @@ namespace AeroDesk.API.Controllers
 
         // DELETE: api/passengers/1
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Administrator")]
+        // [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(int id)
         {
             var deleted = await _mediator.Send(new DeletePassengerCommand(id));

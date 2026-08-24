@@ -17,7 +17,7 @@ namespace AeroDesk.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Administrator")]
+    // [Authorize(Roles = "Administrator")]
     public class ReportsController : ControllerBase
     {
         private readonly IMediator _mediator;

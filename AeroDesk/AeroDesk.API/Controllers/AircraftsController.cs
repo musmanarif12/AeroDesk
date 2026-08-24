@@ -12,7 +12,7 @@ namespace AeroDesk.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize] // Base: must be authenticated for everything in this controller
+    [Authorize]
     public class AircraftsController : ControllerBase
     {
         private readonly IMediator _mediator;

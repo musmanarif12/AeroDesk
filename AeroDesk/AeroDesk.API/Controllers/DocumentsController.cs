@@ -12,7 +12,7 @@ namespace AeroDesk.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize] // Base: must be logged in. Passenger can upload own docs (SRS 4.5)
+    // [Authorize] // Base: must be logged in. Passenger can upload own docs (SRS 4.5)
     public class DocumentsController : ControllerBase
     {
         private readonly IMediator _mediator;

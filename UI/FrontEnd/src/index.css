@@ -1,0 +1,86 @@
+:root {
+  --primary: #5932ea;
+  --primary-hover: #4d28d6;
+  --primary-light: #ece9fe;
+  --primary-glow: rgba(89, 50, 234, 0.2);
+  
+  --success: #00ac4f;
+  --success-bg: rgba(22, 192, 152, 0.15);
+  --success-border: #00b087;
+  
+  --danger: #df0404;
+  --danger-bg: rgba(255, 197, 197, 0.4);
+  --danger-border: #ff5b5b;
+  
+  --warning: #f59e0b;
+  --warning-bg: rgba(245, 158, 11, 0.15);
+  --warning-border: #f59e0b;
+
+  --info: #0284c7;
+  --info-bg: rgba(2, 132, 199, 0.15);
+  --info-border: #0284c7;
+
+  --bg-app: #f5f6fa;
+  --bg-card: #ffffff;
+  --bg-sidebar: #ffffff;
+  --bg-input: #f9fbff;
+  
+  --text-dark: #292d32;
+  --text-muted: #9197b3;
+  --text-light: #b5b7c0;
+  --text-primary: #5932ea;
+  
+  --border-light: #eef1f6;
+  --border-subtle: #f2f4f8;
+  
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 30px;
+  
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.02);
+  --shadow-card: 0 10px 40px rgba(71, 91, 142, 0.04);
+  --shadow-hover: 0 14px 44px rgba(89, 50, 234, 0.08);
+  
+  --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-app);
+  color: var(--text-dark);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+}
+
+button, input, select {
+  font-family: inherit;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d8dce6;
+  border-radius: 99px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #bcc3d4;
+}
