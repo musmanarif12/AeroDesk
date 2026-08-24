@@ -1,12 +1,13 @@
-Airport Operations Management System (AOMS)
+AeroDesk
 
-A production-ready Enterprise Airport Operations Management System built with .NET 9, implementing Clean Architecture,CQRS (Command Query Responsibility Segments),MediatR, and Entity Framework Core.
+A production-ready Enterprise Airport Operations Management System built with a React Frontend Dashboard and a .NET 9 Backend, implementing Clean Architecture, CQRS (Command Query Responsibility Segregation), MediatR, and Entity Framework Core.
 
-This solution provides a centralized backend infrastructure for handling complex airport operations—including flight scheduling, passenger bookings, check-in workflows, baggage tracking, automated email notifications, and an extensible local document management system. API testing and interactive documentation are configured using **Scalar API Reference**.
+This full-stack solution provides a centralized airport operations platform—enabling real-time management of flights, passenger bookings, check-in workflows, baggage tracking, automated email notifications, local document management, and an interactive operations dashboard. API testing and interactive documentation are configured using Scalar API Reference.
 
 Tech Stack
 
-* Framework: ASP.NET Core Web API (.NET 9)
+* Frontend: React.js, modern CSS/UI design, REST API integration
+* Backend Framework: ASP.NET Core Web API (.NET 9)
 * Architecture: Clean Architecture + CQRS Pattern
 * Design Patterns: Mediator (MediatR), Repository, Strategy Pattern (Storage Provider)
 * Database & ORM: SQL Server, Entity Framework Core 9 (Code-First)
@@ -18,48 +19,49 @@ Tech Stack
 
 Key Features & Modules
 
-1. Authentication & User Management
+1. Interactive React Operations Dashboard 
+
+* Dynamic UI integrated directly with .NET 9 backend endpoints.
+* Real-time operational data grid rendering active modules including Flights, Aircrafts, Airlines, Airports, Baggage, Boarding Passes, Bookings, Check-Ins, Gates, and Passengers.
+* Real-time system gateway status, module counters, paginated tables, and instant refresh capabilities.
+
+2. Authentication & User Management
 
 * Secure JWT-based authentication flow (Login, Password Reset).
 * Role-Based Access Control enforcing granular security policies across 5 distinct system roles.
 * Full User Management CRUD (Activation, Deactivation, Role Assignment).
 
-2. Flight & Airline Management
+3. Flight & Airline Management
 
 * Manage Airlines, Fleet Aircraft, and Gate assignments.
 * Schedule and update real-time flight statuses (Scheduled, Boarding, Departed, Delayed, Cancelled).
 * Optimized LINQ queries for flight occupancy and delay tracking.
 
-3. Flight Departure Email Notification System (NEW)
+4. Flight Departure Email Notification System
 
 * Automated Background Service: `FlightNotificationBackgroundService` polls the database every 10 minutes.
 * Proactive Passenger Alerts: Automatically scans for upcoming flight departures scheduled within the next 5 hours.
 * Email Service Abstraction: Integrated `IEmailService` with `SmtpEmailService` utilizing Mailtrap for delivery.
 * Idempotency: Implemented `NotificationSent` flag on the `Flight` entity with EF Core migrations to eliminate duplicate emails.
 
-4. Booking, Check-In & Boarding Workflow
+5. Booking, Check-In & Boarding Workflow
 
 * Complete lifecycle management for passenger reservations.
 * Check-in module with automated seat assignment and luggage registration.
 * Automated Boarding Pass generation linked directly to check-in records.
 * Digital boarding pass verification and boarding gate operations.
 
-5. Baggage Tracking
+6. Baggage Tracking
 
 * Register baggage against passenger records and bookings.
 * Real-time baggage status updates across transition points.
 * Visual tagging support via attached scan documents.
 
-6. Local Document Storage & Management Module
+7. Local Document Storage & Management Module
 
 * Modular file management system allowing uploaded documents to attach polymorphically to core domain entities (`Passenger`, `Booking`, `CheckIn`, `Airline`, `Aircraft`).
 * Local Machine Provider: Files are stored directly on the host server's local file directory via an `IFileStorageService` implementation.
 * Security & Validation: File extension whitelist (`.pdf`, `.jpg`, `.jpeg`, `.png`), size limit enforcement (up to 5 MB), and soft-delete capabilities preserving audit trails.
-
-7. Analytical Reporting & Dashboard
-
-* Real-time metrics for daily operations (Active Flights, Flights Today, Revenue Summary).
-* Advanced LINQ reports for tracking delayed flights, capacity utilization, passenger history, missing passenger documents, and total storage usage by user.
 
 System Roles & Access Matrix
 
@@ -73,10 +75,14 @@ System Roles & Access Matrix
 
 Architecture Overview
 
-The solution adheres to Clean Architecture principles, ensuring strict separation of concerns, maintainability, and testability:
-
+```text
                ┌────────────────────────┐
-               │    Presentation API    │
+               │   React Frontend UI    │
+               │   (Client Dashboard)   │
+               └───────────┬────────────┘
+                           │ HTTP / REST
+               ┌───────────▼────────────┐
+               │   Presentation API     │
                │   (Scalar Interactive) │
                └───────────┬────────────┘
                            │
@@ -93,9 +99,11 @@ The solution adheres to Clean Architecture principles, ensuring strict separatio
 │                │                    │ Local Storage)  │
 └────────────────┘                    └─────────────────┘
 
+```
 
-* Domain Layer: Core entities (`Flight`, `Passenger`, `Booking`, `Document`, etc.), enums, and domain logic.
-  Application Layer: CQRS commands/queries, MediatR handlers, DTOs, FluentValidation rules, AutoMapper profiles, and service interfaces (`IEmailService`, `IFileStorageService`).
+* Frontend Layer: React SPA consuming API endpoints to present real-time table views, metrics, and operation controls.
+* Domain Layer Core entities (`Flight`, `Passenger`, `Booking`, `Document`, etc.), enums, and domain logic.
+* Application Layer: CQRS commands/queries, MediatR handlers, DTOs, FluentValidation rules, AutoMapper profiles, and service interfaces (`IEmailService`, `IFileStorageService`).
 * Infrastructure Layer: EF Core `DbContext`, database configurations, migrations, background services, local disk storage service implementation, and SMTP email services.
 * Presentation API Layer: Controllers, middlewares (Global Exception Handling, Custom Response Wrappers), Scalar API UI endpoint integration, and Dependency Injection registration.
 
@@ -115,50 +123,47 @@ The system utilizes an enterprise relational schema consisting of 13 core entiti
 * `BoardingPass`
 * `Baggage`
 * `Gate`
-* `Document` (Polymorphic relationship via `EntityType` and `EntityId`)
+* `Document` *(Polymorphic relationship via `EntityType` and `EntityId`)*
 
-API Reference
-
+API Reference & Endpoints
 Authentication
 
-POST /api/auth/login
-POST /api/auth/change-password
-
+* `POST /api/auth/login`
+* `POST /api/auth/change-password`
 
 Flights
 
-GET    /api/flights
-POST   /api/flights
-GET    /api/flights/{id}
-PUT    /api/flights/{id}
-PATCH  /api/flights/{id}/status
-
+* `GET /api/flights`
+* `POST /api/flights`
+* `GET /api/flights/{id}`
+* `PUT /api/flights/{id}`
+* `PATCH /api/flights/{id}/status`
 
 Check-In & Boarding
 
-POST /api/checkin
-POST /api/checkin/generate-boarding-pass
-POST /api/boarding/scan
+* `POST /api/checkin`
+* `POST /api/checkin/generate-boarding-pass`
+* `POST /api/boarding/scan`
 
 File Upload & Document Management (Local Disk)
 
-POST   /api/files/upload?entityType={type}&entityId={id}
-GET    /api/files/{id}/download
-GET    /api/files?entityType={type}&entityId={id}
-PUT    /api/files/{id}
-DELETE /api/files/{id}
+* `POST /api/files/upload?entityType={type}&entityId={id}`
+* `GET /api/files/{id}/download`
+* `GET /api/files?entityType={type}&entityId={id}`
+* `PUT /api/files/{id}`
+* `DELETE /api/files/{id}`
+
 
 Configuration & Setup
 
 Prerequisites
 
 * .NET 9.0 SDK
-* SQL Server
-* Mailtrap (or standard SMTP server)
+*  Node.js (v18+ recommended)
+*  SQL Server
+*  Mailtrap (or standard SMTP server)
 
-AppSettings Configuration
-
-Update your `appsettings.json` file with your database connection string, JWT parameters, SMTP credentials, and local storage directory configuration:
+AppSettings Configuration (`appsettings.json`)
 
 ```json
 {
@@ -189,20 +194,25 @@ Update your `appsettings.json` file with your database connection string, JWT pa
 ```
 Database Migration
 
-Run the following commands to apply database migrations and initialize schema objects:
-
 ```bash
 dotnet ef database update --project Infrastructure --startup-project Presentation
 
 ```
-Running the Application & Testing with Scalar
 
-Run the Web API project:
+Running the Application
 
+1. Start Backend API:
 ```bash
 dotnet run --project Presentation
 
 ```
 
-Once running, access the interactive Scalar API Reference interface for testing endpoints at:
-`https://localhost:{port}/scalar/v1`
+
+Interactive Scalar API documentation will be available at: `https://localhost:{port}/scalar/v1`
+2. Start React Frontend:
+```bash
+cd client
+npm install
+npm run dev
+
+```
