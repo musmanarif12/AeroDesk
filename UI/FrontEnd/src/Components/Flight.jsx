@@ -9,24 +9,59 @@ function Flight() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchFlights = useCallback(() => {
-    setLoading(true);
-    setError(null);
-    axios
-      .get(`${API_BASE}/api/Flights`)
-      .then((res) => {
-        setFlights(res.data || []);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.response?.data?.message || err.message || "Failed to connect to Flights API");
-        setLoading(false);
-      });
-  }, []);
+  // Server-side pagination & search states
+  const [pageNumber, setPageNumber] = useState(1);
+  const [pageSize] = useState(8);
+  const [totalCount, setTotalCount] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
 
+  const fetchFlights = useCallback(
+    (page = pageNumber, search = searchTerm) => {
+      setLoading(true);
+      setError(null);
+
+      axios
+        .get(`${API_BASE}/api/Flights`, {
+          params: {
+            pageNumber: page,
+            pageSize: pageSize,
+            searchTerm: search.trim() || undefined,
+          },
+        })
+        .then((res) => {
+          setFlights(res.data?.items || []);
+          setTotalCount(res.data?.totalCount || 0);
+          setLoading(false);
+        })
+        .catch((err) => {
+          setError(
+            err.response?.data?.message ||
+            err.message ||
+            "Failed to connect to Flights API"
+          );
+          setLoading(false);
+        });
+    },
+    [pageNumber, pageSize, searchTerm]
+  );
+
+  // Search input change delay (Debounce 400ms) to reduce API calls
   useEffect(() => {
-    fetchFlights();
-  }, [fetchFlights]);
+    const handler = setTimeout(() => {
+      fetchFlights(pageNumber, searchTerm);
+    }, 400);
+
+    return () => clearTimeout(handler);
+  }, [pageNumber, searchTerm, fetchFlights]);
+
+  const handlePageChange = (newPage) => {
+    setPageNumber(newPage);
+  };
+
+  const handleSearchChange = (term) => {
+    setSearchTerm(term);
+    setPageNumber(1); // Reset to page 1 on new search
+  };
 
   return (
     <DataTable
@@ -36,7 +71,13 @@ function Flight() {
       data={flights}
       loading={loading}
       error={error}
-      onRefresh={fetchFlights}
+      onRefresh={() => fetchFlights(pageNumber, searchTerm)}
+      pageNumber={pageNumber}
+      pageSize={pageSize}
+      totalCount={totalCount}
+      onPageChange={handlePageChange}
+      searchTerm={searchTerm}
+      onSearchChange={handleSearchChange}
     />
   );
 }

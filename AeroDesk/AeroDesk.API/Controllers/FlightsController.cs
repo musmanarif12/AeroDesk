@@ -7,6 +7,7 @@ using AeroDesk.Application.Features.Flights.Queries.GetFlights;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using AeroDesk.Application.Common; 
 
 namespace AeroDesk.API.Controllers
 {
@@ -23,9 +24,15 @@ namespace AeroDesk.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<FlightDto>>> GetAll()
+        public async Task<ActionResult<PagedResult<FlightDto>>> GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 8)
         {
-            var result = await _mediator.Send(new GetFlightsQuery());
+            var query = new GetFlightsQuery
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+
+            var result = await _mediator.Send(query);
             return Ok(result);
         }
 

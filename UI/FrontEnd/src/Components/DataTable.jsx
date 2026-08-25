@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 
-// Format header keys into human-readable titles (e.g. flight_id -> Flight Id, airlineName -> Airline Name)
+// Format header keys into human-readable titles
 function formatHeader(key) {
   if (!key) return "";
   return key
@@ -86,20 +86,24 @@ export default function DataTable({
   loading = false,
   error = null,
   onRefresh,
+  // Server-side Pagination & Search Props
+  pageNumber = 1,
+  pageSize = 8,
+  totalCount = 0,
+  onPageChange,
+  searchTerm = "",
+  onSearchChange,
 }) {
-  const [searchTerm, setSearchTerm] = useState("");
   const [sortColumn, setSortColumn] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
-  const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 8;
 
-  // Extract columns from data
+  // Extract columns from backend data
   const columns = useMemo(() => {
     if (!Array.isArray(data) || data.length === 0) return [];
     return Object.keys(data[0]);
   }, [data]);
 
-  // Handle column sorting
+  // Handle column sorting (Sorting only loaded page rows visually)
   const handleSort = (col) => {
     if (sortColumn === col) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
@@ -109,22 +113,11 @@ export default function DataTable({
     }
   };
 
-  // Filtered & Sorted Data
-  const filteredData = useMemo(() => {
+  // Sort current page items
+  const sortedData = useMemo(() => {
     if (!Array.isArray(data)) return [];
     let items = [...data];
 
-    // Filter by search query across all fields
-    if (searchTerm.trim() !== "") {
-      const q = searchTerm.toLowerCase();
-      items = items.filter((item) =>
-        Object.values(item).some((val) =>
-          String(val ?? "").toLowerCase().includes(q)
-        )
-      );
-    }
-
-    // Sort
     if (sortColumn) {
       items.sort((a, b) => {
         const valA = a[sortColumn] ?? "";
@@ -141,14 +134,12 @@ export default function DataTable({
     }
 
     return items;
-  }, [data, searchTerm, sortColumn, sortDirection]);
+  }, [data, sortColumn, sortDirection]);
 
-  // Pagination
-  const totalPages = Math.max(1, Math.ceil(filteredData.length / pageSize));
-  const paginatedData = useMemo(() => {
-    const start = (currentPage - 1) * pageSize;
-    return filteredData.slice(start, start + pageSize);
-  }, [filteredData, currentPage, pageSize]);
+  // Server-side pagination calculation
+  const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
+  const startEntry = totalCount === 0 ? 0 : (pageNumber - 1) * pageSize + 1;
+  const endEntry = Math.min(pageNumber * pageSize, totalCount);
 
   return (
     <div className="card-container">
@@ -159,7 +150,7 @@ export default function DataTable({
             {icon && <span style={{ fontSize: "22px" }}>{icon}</span>}
             <h2 className="card-title">{title}</h2>
             <span className="record-count-badge">
-              {data.length} {data.length === 1 ? "Record" : "Records"}
+              {totalCount} {totalCount === 1 ? "Record" : "Records"}
             </span>
           </div>
           <p className="card-subtitle">
@@ -168,7 +159,7 @@ export default function DataTable({
         </div>
 
         <div className="card-actions-group">
-          {/* Search Box */}
+          {/* Server-Side Search Box */}
           <div className="table-search-box">
             <svg
               width="16"
@@ -188,14 +179,11 @@ export default function DataTable({
               type="text"
               placeholder={`Search ${title.toLowerCase()}...`}
               value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                setCurrentPage(1);
-              }}
+              onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
             />
             {searchTerm && (
               <button
-                onClick={() => setSearchTerm("")}
+                onClick={() => onSearchChange && onSearchChange("")}
                 style={{
                   border: "none",
                   background: "transparent",
@@ -246,7 +234,14 @@ export default function DataTable({
 
       {/* Error State */}
       {!loading && error && (
-        <div className="notice-banner" style={{ background: "#fff5f5", borderColor: "#feb2b2", color: "#c53030" }}>
+        <div
+          className="notice-banner"
+          style={{
+            background: "#fff5f5",
+            borderColor: "#feb2b2",
+            color: "#c53030",
+          }}
+        >
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <span style={{ fontSize: "18px" }}>⚠️</span>
             <span>
@@ -262,11 +257,19 @@ export default function DataTable({
       )}
 
       {/* Empty State */}
-      {!loading && !error && filteredData.length === 0 && (
+      {!loading && !error && sortedData.length === 0 && (
         <div className="state-container">
           <div style={{ fontSize: "40px", opacity: 0.7 }}>📭</div>
-          <h3 style={{ color: "var(--text-dark)", fontSize: "16px", marginTop: "6px" }}>
-            {searchTerm ? `No results matching "${searchTerm}"` : `No ${title} found.`}
+          <h3
+            style={{
+              color: "var(--text-dark)",
+              fontSize: "16px",
+              marginTop: "6px",
+            }}
+          >
+            {searchTerm
+              ? `No results matching "${searchTerm}"`
+              : `No ${title} found.`}
           </h3>
           <p style={{ color: "var(--text-muted)", fontSize: "13px" }}>
             {searchTerm
@@ -276,8 +279,8 @@ export default function DataTable({
         </div>
       )}
 
-      {/* Modern Data Table */}
-      {!loading && !error && filteredData.length > 0 && (
+      {/* Data Table */}
+      {!loading && !error && sortedData.length > 0 && (
         <>
           <div className="table-responsive">
             <table className="modern-table">
@@ -299,7 +302,12 @@ export default function DataTable({
                       >
                         <span>{formatHeader(col)}</span>
                         {sortColumn === col && (
-                          <span style={{ fontSize: "11px", color: "var(--primary)" }}>
+                          <span
+                            style={{
+                              fontSize: "11px",
+                              color: "var(--primary)",
+                            }}
+                          >
                             {sortDirection === "asc" ? "▲" : "▼"}
                           </span>
                         )}
@@ -309,7 +317,7 @@ export default function DataTable({
                 </tr>
               </thead>
               <tbody>
-                {paginatedData.map((row, idx) => (
+                {sortedData.map((row, idx) => (
                   <tr key={row.id || row.Id || idx}>
                     {columns.map((col) => (
                       <td key={col}>{renderCellValue(col, row[col])}</td>
@@ -320,69 +328,64 @@ export default function DataTable({
             </table>
           </div>
 
-          {/* Table Footer with Pagination */}
+          {/* Table Footer */}
           <div className="table-footer">
             <div className="footer-info">
               Showing{" "}
               <strong>
-                {(currentPage - 1) * pageSize + 1} -{" "}
-                {Math.min(currentPage * pageSize, filteredData.length)}
+                {startEntry} – {endEntry}
               </strong>{" "}
-              of <strong>{filteredData.length}</strong> entries
-              {searchTerm && ` (filtered from ${data.length} total)`}
+              of <strong>{totalCount}</strong> entries
             </div>
 
-            {totalPages > 1 && (
-              <div className="pagination-controls">
-                <button
-                  className="page-btn"
-                  disabled={currentPage === 1}
-                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                >
-                  ‹
-                </button>
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                  (pageNum) => {
-                    if (
-                      pageNum === 1 ||
-                      pageNum === totalPages ||
-                      Math.abs(pageNum - currentPage) <= 1
-                    ) {
-                      return (
-                        <button
-                          key={pageNum}
-                          className={`page-btn ${
-                            currentPage === pageNum ? "active" : ""
+            <div className="pagination-controls">
+              <button
+                className="page-btn"
+                disabled={pageNumber === 1}
+                onClick={() => onPageChange && onPageChange(pageNumber - 1)}
+              >
+                ‹
+              </button>
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (pageNum) => {
+                  if (
+                    pageNum === 1 ||
+                    pageNum === totalPages ||
+                    Math.abs(pageNum - pageNumber) <= 1
+                  ) {
+                    return (
+                      <button
+                        key={pageNum}
+                        className={`page-btn ${pageNumber === pageNum ? "active" : ""
                           }`}
-                          onClick={() => setCurrentPage(pageNum)}
-                        >
-                          {pageNum}
-                        </button>
-                      );
-                    } else if (
-                      pageNum === currentPage - 2 ||
-                      pageNum === currentPage + 2
-                    ) {
-                      return (
-                        <span key={pageNum} className="page-dots">
-                          ...
-                        </span>
-                      );
-                    }
-                    return null;
+                        onClick={() => onPageChange && onPageChange(pageNum)}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  } else if (
+                    pageNum === pageNumber - 2 ||
+                    pageNum === pageNumber + 2
+                  ) {
+                    return (
+                      <span key={pageNum} className="page-dots">
+                        ...
+                      </span>
+                    );
                   }
-                )}
-                <button
-                  className="page-btn"
-                  disabled={currentPage === totalPages}
-                  onClick={() =>
-                    setCurrentPage((p) => Math.min(totalPages, p + 1))
-                  }
-                >
-                  ›
-                </button>
-              </div>
-            )}
+                  return null;
+                }
+              )}
+
+              <button
+                className="page-btn"
+                disabled={pageNumber === totalPages}
+                onClick={() => onPageChange && onPageChange(pageNumber + 1)}
+              >
+                ›
+              </button>
+            </div>
           </div>
         </>
       )}
