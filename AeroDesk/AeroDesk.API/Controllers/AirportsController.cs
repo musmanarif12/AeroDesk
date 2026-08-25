@@ -12,7 +12,8 @@ namespace AeroDesk.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    [AllowAnonymous]
+    //[Authorize]
     public class AirportsController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -24,7 +25,7 @@ namespace AeroDesk.API.Controllers
 
         // GET: api/airports
         [HttpGet]
-        [Authorize(Roles = "Administrator,Airline Manager,Check-In Officer")]
+        //[Authorize(Roles = "Administrator,Airline Manager,Check-In Officer")]
         public async Task<ActionResult<List<AirportDto>>> GetAll()
         {
             var airports = await _mediator.Send(
@@ -35,7 +36,7 @@ namespace AeroDesk.API.Controllers
 
         // GET: api/airports/1
         [HttpGet("{id}")]
-        [Authorize(Roles = "Administrator,Airline Manager,Check-In Officer")]
+        //[Authorize(Roles = "Administrator,Airline Manager,Check-In Officer")]
         public async Task<ActionResult<AirportDto>> GetById(int id)
         {
             var airport = await _mediator.Send(
@@ -51,7 +52,7 @@ namespace AeroDesk.API.Controllers
 
         // POST: api/airports
         [HttpPost]
-        [Authorize(Roles = "Administrator")]
+        //[Authorize(Roles = "Administrator")]
         public async Task<ActionResult<AirportDto>> Create(
             CreateAirportCommand command)
         {
@@ -65,7 +66,7 @@ namespace AeroDesk.API.Controllers
 
         // PUT: api/airports/1
         [HttpPut("{id}")]
-        [Authorize(Roles = "Administrator")]
+        //[Authorize(Roles = "Administrator")]
         public async Task<ActionResult<AirportDto>> Update(
             int id,
             UpdateAirportCommand command)
@@ -87,7 +88,7 @@ namespace AeroDesk.API.Controllers
 
         // DELETE: api/airports/1
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Administrator")]
+        //[Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _mediator.Send(

@@ -4,7 +4,7 @@ using MediatR;
 
 namespace AeroDesk.Application.Features.Passengers.Queries.GetPassengers
 {
-    [Authorize(Roles = "Administrator,Check-In Officer,CheckInOfficer,Boarding Officer,BoardingOfficer")]
+    //[Authorize(Roles = "Administrator,Check-In Officer,CheckInOfficer,Boarding Officer,BoardingOfficer")]
     public class GetPassengersQuery : IRequest<List<PassengerDto>>
     {
     }

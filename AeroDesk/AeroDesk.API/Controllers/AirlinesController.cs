@@ -12,7 +12,8 @@ namespace AeroDesk.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    [AllowAnonymous]
+    //[Authorize]
     public class AirlinesController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -24,7 +25,7 @@ namespace AeroDesk.API.Controllers
 
         // GET: api/airlines
         [HttpGet]
-        [Authorize(Roles = "Administrator,Airline Manager,AirlineManager")]
+        //[Authorize(Roles = "Administrator,Airline Manager,AirlineManager")]
         public async Task<ActionResult<List<AirlineDto>>> GetAll()
         {
             var airlines = await _mediator.Send(new GetAirlinesQuery());
@@ -34,7 +35,7 @@ namespace AeroDesk.API.Controllers
 
         // GET: api/airlines/1
         [HttpGet("{id}")]
-        [Authorize(Roles = "Administrator,Airline Manager,AirlineManager")]
+        //[Authorize(Roles = "Administrator,Airline Manager,AirlineManager")]
         public async Task<ActionResult<AirlineDto>> GetById(int id)
         {
             var airline = await _mediator.Send(new GetAirlineByIdQuery(id));
@@ -49,7 +50,7 @@ namespace AeroDesk.API.Controllers
 
         // POST: api/airlines
         [HttpPost]
-        [Authorize(Roles = "Administrator")]
+        //[Authorize(Roles = "Administrator")]
         public async Task<ActionResult<AirlineDto>> Create(
             CreateAirlineCommand command)
         {
@@ -63,7 +64,7 @@ namespace AeroDesk.API.Controllers
 
         // PUT: api/airlines/1
         [HttpPut("{id}")]
-        [Authorize(Roles = "Administrator")]
+        //[Authorize(Roles = "Administrator")]
         public async Task<ActionResult<AirlineDto>> Update(
             int id,
             UpdateAirlineCommand command)
@@ -85,7 +86,7 @@ namespace AeroDesk.API.Controllers
 
         // DELETE: api/airlines/1
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Administrator")]
+        //[Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _mediator.Send(

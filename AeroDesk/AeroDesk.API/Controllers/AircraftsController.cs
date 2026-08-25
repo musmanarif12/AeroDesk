@@ -12,7 +12,8 @@ namespace AeroDesk.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    [AllowAnonymous]
+    //[Authorize]
     public class AircraftsController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -24,7 +25,7 @@ namespace AeroDesk.API.Controllers
 
         // GET: api/aircrafts
         [HttpGet]
-        [Authorize(Roles = "Administrator,Airline Manager")]
+        //[Authorize(Roles = "Administrator,Airline Manager")]
         public async Task<ActionResult<List<AircraftDto>>> GetAll()
         {
             var aircrafts = await _mediator.Send(new GetAircraftsQuery());
@@ -34,7 +35,7 @@ namespace AeroDesk.API.Controllers
 
         // GET: api/aircrafts/1
         [HttpGet("{id}")]
-        [Authorize(Roles = "Administrator,Airline Manager")]
+        //[Authorize(Roles = "Administrator,Airline Manager")]
         public async Task<ActionResult<AircraftDto>> GetById(int id)
         {
             var aircraft = await _mediator.Send(new GetAircraftByIdQuery(id));
@@ -49,7 +50,7 @@ namespace AeroDesk.API.Controllers
 
         // POST: api/aircrafts
         [HttpPost]
-        [Authorize(Roles = "Administrator,Airline Manager")]
+        //[Authorize(Roles = "Administrator,Airline Manager")]
         public async Task<ActionResult<AircraftDto>> Create(CreateAircraftCommand command)
         {
             var aircraft = await _mediator.Send(command);
@@ -62,7 +63,7 @@ namespace AeroDesk.API.Controllers
 
         // PUT: api/aircrafts/1
         [HttpPut("{id}")]
-        [Authorize(Roles = "Administrator,Airline Manager")]
+        //[Authorize(Roles = "Administrator,Airline Manager")]
         public async Task<ActionResult<AircraftDto>> Update(
             int id,
             UpdateAircraftCommand command)
@@ -84,7 +85,7 @@ namespace AeroDesk.API.Controllers
 
         // DELETE: api/aircrafts/1
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Administrator")]
+        //[Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _mediator.Send(
