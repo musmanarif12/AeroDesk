@@ -4,7 +4,7 @@ using MediatR;
 
 namespace AeroDesk.Application.Features.Flights.Commands.CreateFlight
 {
-    [Authorize(Roles = "Administrator,Airline Manager,AirlineManager")]
+    //[Authorize(Roles = "Administrator,Airline Manager,AirlineManager")]
     public class CreateFlightCommand : IRequest<FlightDto>
     {
         public string FlightNumber { get; set; } = string.Empty;

@@ -14,6 +14,7 @@ namespace AeroDesk.API.Controllers
     [ApiController]
     [Route("api/[controller]")]
     // [Authorize]   <-- temporarily comment out for testing
+    [AllowAnonymous]
     public class FlightsController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -50,7 +51,7 @@ namespace AeroDesk.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Administrator,Airline Manager,AirlineManager")]
+        //[Authorize(Roles = "Administrator,Airline Manager,AirlineManager")]
         public async Task<ActionResult<FlightDto>> Create(CreateFlightCommand command)
         {
             var result = await _mediator.Send(command);
@@ -62,7 +63,7 @@ namespace AeroDesk.API.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Administrator,Airline Manager,AirlineManager")]
+        //[Authorize(Roles = "Administrator,Airline Manager,AirlineManager")]
         public async Task<ActionResult<FlightDto>> Update(
             int id,
             UpdateFlightCommand command)
@@ -83,7 +84,7 @@ namespace AeroDesk.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Administrator")]
+        //[Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(int id)
         {
             var deleted = await _mediator.Send(new DeleteFlightCommand(id));

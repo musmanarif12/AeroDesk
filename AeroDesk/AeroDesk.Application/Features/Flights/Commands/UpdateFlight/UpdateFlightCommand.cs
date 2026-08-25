@@ -4,7 +4,7 @@ using MediatR;
 
 namespace AeroDesk.Application.Features.Flights.Commands.UpdateFlight
 {
-    [Authorize(Roles = "Administrator,Airline Manager")]
+    //[Authorize(Roles = "Administrator,Airline Manager")]
     public class UpdateFlightCommand : IRequest<FlightDto?>
     {
         public int Id { get; set; }

@@ -93,6 +93,10 @@ export default function DataTable({
   onPageChange,
   searchTerm = "",
   onSearchChange,
+  // CRUD Callbacks
+  onAdd,
+  onEdit,
+  onDelete,
 }) {
   const [sortColumn, setSortColumn] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
@@ -219,6 +223,30 @@ export default function DataTable({
               Refresh
             </button>
           )}
+
+          {/* Add New Button */}
+          {onAdd && (
+            <button
+              className="add-new-btn"
+              onClick={onAdd}
+              title={`Add new ${title.slice(0, -1) || title}`}
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              Add New
+            </button>
+          )}
         </div>
       </div>
 
@@ -314,6 +342,12 @@ export default function DataTable({
                       </div>
                     </th>
                   ))}
+                  {/* Actions column header — only if CRUD is enabled */}
+                  {(onEdit || onDelete) && (
+                    <th style={{ textAlign: "center", cursor: "default" }}>
+                      Actions
+                    </th>
+                  )}
                 </tr>
               </thead>
               <tbody>
@@ -322,6 +356,31 @@ export default function DataTable({
                     {columns.map((col) => (
                       <td key={col}>{renderCellValue(col, row[col])}</td>
                     ))}
+                    {/* Action Buttons cell */}
+                    {(onEdit || onDelete) && (
+                      <td>
+                        <div className="row-actions">
+                          {onEdit && (
+                            <button
+                              className="action-btn action-btn-edit"
+                              onClick={() => onEdit(row)}
+                              title="Edit row"
+                            >
+                              ✏️ Edit
+                            </button>
+                          )}
+                          {onDelete && (
+                            <button
+                              className="action-btn action-btn-delete"
+                              onClick={() => onDelete(row)}
+                              title="Delete row"
+                            >
+                              🗑️ Delete
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>
