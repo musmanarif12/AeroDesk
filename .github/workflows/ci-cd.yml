@@ -1,29 +1,29 @@
-name: AeroDesk CI/CD Pipeline
+# 1. Runtime Image
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
+WORKDIR /app
+EXPOSE 8080
 
-on:
-  push:
-    branches: [ "main", "master" ]
-  pull_request:
-    branches: [ "main", "master" ]
+# 2. Build Stage
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src
 
-jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
+# Project files copy aur restore (Apne project folders ke naam ke mutabiq adjust karein)
+COPY ["*.sln", "./"]
+COPY ["AeroDesk.API/AeroDesk.API.csproj", "AeroDesk.API/"]
+RUN dotnet restore
 
-    steps:
-    - name: 1. Checkout Repository
-      uses: actions/checkout@v4
+COPY . .
+WORKDIR "/src/AeroDesk.API"
+RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
 
-    - name: 2. Setup .NET SDK
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '9.0.x'
+# 3. Publish Stage
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-    - name: 3. Restore Dependencies
-      run: dotnet restore
-
-    - name: 4. Build Project
-      run: dotnet build --no-restore --configuration Release
-
-    - name: 5. Build Docker Image
-      run: docker build -t aerodesk-api:${{ github.sha }} .
+# 4. Final Image
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "AeroDesk.API.dll"]
