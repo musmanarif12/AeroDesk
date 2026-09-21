@@ -1,0 +1,29 @@
+name: AeroDesk CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 1. Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: 2. Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+
+    - name: 3. Restore Dependencies
+      run: dotnet restore
+
+    - name: 4. Build Project
+      run: dotnet build --no-restore --configuration Release
+
+    - name: 5. Build Docker Image
+      run: docker build -t aerodesk-api:${{ github.sha }} .
